@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>I Love You Divyanshi</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      background-color: white;
+      overflow-x: hidden;
+    }
+    h1 {
+      font-size: 2.5em;
+      color: hotpink;
+      margin-top: 60px;
+      font-weight: bold;
+    }
+    .hearts::before {
+      content: "❤️ ";
+      font-size: 20px;
+    }
+    .hearts::after {
+      content: " ❤️";
+      font-size: 20px;
+    }
+    button {
+      padding: 12px 24px;
+      font-size: 16px;
+      background-color: pink;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
+      transition: transform 0.2s;
+    }
+    button:hover {
+      transform: scale(1.1);
+    }
+    .hidden {
+      display: none;
+    }
+    #roses-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: -1;
+    }
+    .rose {
+      position: absolute;
+      font-size: 30px;
+      animation: fall linear infinite;
+    }
+    @keyframes fall {
+      from { transform: translateY(-10%); opacity: 1; }
+      to { transform: translateY(110%); opacity: 0.8; }
+    }
+    #love-text {
+      margin-top: 40px;
+      font-size: 1.5em;
+      color: deeppink;
+      padding: 0 10px;
+    }
+    #bear {
+      margin-top: 20px;
+      font-size: 80px;
+    }
+    #bear-text {
+      font-size: 1.2em;
+      margin-top: 10px;
+      color: darkslategray;
+      padding: 0 10px;
+    }
+    .slider {
+      width: 80%;
+      margin-top: 20px;
+    }
+    #slider-value {
+      font-size: 1.2em;
+      color: deeppink;
+      margin-top: 10px;
+    }
+    #game {
+      margin-top: 30px;
+    }
+    #game button {
+      margin: 10px;
+      background-color: lightpink;
+    }
+    #game-area {
+      position: relative;
+      width: 90%;
+      height: 250px;
+      margin: auto;
+      border: 2px dashed pink;
+      overflow: hidden;
+      border-radius: 15px;
+    }
+    @media (max-width: 600px) {
+      h1 { font-size: 2em; margin-top: 40px; }
+      #love-text { font-size: 1.2em; }
+      #bear { font-size: 60px; }
+      button { font-size: 14px; padding: 10px 20px; }
+      .slider { width: 90%; }
+    }
+  </style>
+</head>
+<body>
+  <audio id="pop-sound" src="https://www.myinstants.com/media/sounds/pop-cat.mp3"></audio>
+  <audio id="bg-music" src="https://www.bensound.com/bensound-music/bensound-romantic.mp3" loop></audio>
+
+  <div id="page1">
+    <h1 class="hearts">I LOVE YOU DIVYANSHI</h1>
+    <button onclick="showPage2()">Click Me</button>
+  </div>
+
+  <div id="page2" class="hidden">
+    <div id="roses-container"></div>
+    <div id="love-text">Baby, I love you more than words can ever say 💖</div>
+    <h2>How much you love me?</h2>
+    <input type="range" min="0" max="100" value="50" class="slider" id="love-slider" oninput="updateSliderValue()">
+    <div id="slider-value">50%</div>
+    <br>
+    <button onclick="checkLove()">OK</button>
+    <div id="bear"></div>
+    <div id="bear-text"></div>
+    <div id="game" class="hidden">
+      <h3>Mini Game: Catch My Love 💘</h3>
+      <p>Click the hearts as they fall!</p>
+      <div id="game-area"></div>
+      <p id="score">Score: 0</p>
+    </div>
+  </div>
+
+  <script>
+    function showPage2() {
+      document.getElementById("page1").classList.add("hidden");
+      document.getElementById("page2").classList.remove("hidden");
+      startRoseShower();
+      document.getElementById("bg-music").play();
+    }
+
+    function startRoseShower() {
+      const container = document.getElementById("roses-container");
+      setInterval(() => {
+        let rose = document.createElement("div");
+        rose.classList.add("rose");
+        rose.innerHTML = "🌹";
+        rose.style.left = Math.random() * 100 + "%";
+        rose.style.animationDuration = (3 + Math.random() * 2) + "s";
+        container.appendChild(rose);
+        setTimeout(() => rose.remove(), 5000);
+      }, 300);
+    }
+
+    function updateSliderValue() {
+      const value = document.getElementById("love-slider").value;
+      document.getElementById("slider-value").innerText = value + "%";
+    }
+
+    function checkLove() {
+      const value = document.getElementById("love-slider").value;
+      const bear = document.getElementById("bear");
+      const bearText = document.getElementById("bear-text");
+      const game = document.getElementById("game");
+      if (value < 100) {
+        bear.innerHTML = "🐻";
+        bearText.innerHTML = "I am sorry, but I love you 100% 💕";
+        game.classList.add("hidden");
+      } else {
+        bear.innerHTML = "🐻";
+        bearText.innerHTML = "Omg baby, I love you the most too 😳❤️";
+        game.classList.remove("hidden");
+        startGame();
+      }
+    }
+
+    // Cute mini game: catch falling hearts
+    let score = 0;
+    function startGame() {
+      const area = document.getElementById("game-area");
+      score = 0;
+      document.getElementById("score").innerText = "Score: 0";
+      setInterval(() => {
+        let heart = document.createElement("div");
+        heart.innerHTML = "❤️";
+        heart.style.position = "absolute";
+        heart.style.left = Math.random() * (area.offsetWidth - 30) + "px";
+        heart.style.top = "-20px";
+        heart.style.fontSize = "24px";
+        heart.style.cursor = "pointer";
+        area.appendChild(heart);
+
+        let fallInterval = setInterval(() => {
+          let top = parseInt(heart.style.top);
+          heart.style.top = top + 5 + "px";
+          if (top > area.offsetHeight) {
+            heart.remove();
+            clearInterval(fallInterval);
+          }
+        }, 100);
+
+        heart.onclick = function() {
+          score++;
+          document.getElementById("score").innerText = "Score: " + score;
+          heart.remove();
+          clearInterval(fallInterval);
+          document.getElementById("pop-sound").play();
+        };
+      }, 1000);
+    }
+  </script>
+</body>
+</html>
